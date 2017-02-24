@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MyStarwarsApi.Context;
 using MyStarwarsApi.Repo;
 
 namespace MyStarwarsApi
@@ -21,6 +19,11 @@ namespace MyStarwarsApi
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            using(var db = new SqliteDbContext()){
+                if(db.Database.EnsureCreated())
+                    db.Database.Migrate();
+            }
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -30,6 +33,8 @@ namespace MyStarwarsApi
         {
             // Add framework services.
             services.AddMvc();
+            services.AddEntityFrameworkSqlite()
+                    .AddDbContext<SqliteDbContext>();
 
             services.AddScoped<ICharacterRepository, CharacterRepository>();
         }

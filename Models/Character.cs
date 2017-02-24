@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyStarwarsApi.Models{
     public class Character{
+        [Key]
         public Guid id{get;set;}
+        [Required]
         public String name{get;set;}
         public String side{get;set;}
         public List<Character> charactersKilled{get;set;}
