@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MyStarwarsApi.Context;
+using MyStarwarsApi.Models;
 using MyStarwarsApi.Repo;
 
 namespace MyStarwarsApi
@@ -19,11 +23,6 @@ namespace MyStarwarsApi
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
-
-            using(var db = new SqliteDbContext()){
-                if(db.Database.EnsureCreated())
-                    db.Database.Migrate();
-            }
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -34,7 +33,28 @@ namespace MyStarwarsApi
             // Add framework services.
             services.AddMvc();
             services.AddEntityFrameworkSqlite()
-                    .AddDbContext<SqliteDbContext>();
+                    .AddDbContext<SqliteDbContext>(options => 
+            {
+                var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = "MySwApi.db" };
+                var connectionString = connectionStringBuilder.ToString();
+                var connection = new SqliteConnection(connectionString);
+                options.UseSqlite(connection);
+
+                options.UseOpenIddict<Guid>();
+            });
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<SqliteDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddOpenIddict<Guid>()
+                .AddEntityFrameworkCoreStores<SqliteDbContext>()
+                .AddMvcBinders()
+                .EnableTokenEndpoint("/connect/token")
+                .AllowPasswordFlow()
+                
+                //For development only!
+                .DisableHttpsRequirement();
 
             services.AddScoped<ICharacterRepository, CharacterRepository>();
         }
@@ -45,7 +65,17 @@ namespace MyStarwarsApi
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseDeveloperExceptionPage();
+
+            app.UseOAuthValidation();
+            app.UseOpenIddict();
+            using (var context = app.ApplicationServices.GetRequiredService<SqliteDbContext>())
+            {
+                context.Database.EnsureCreated();
+            }
+
             app.UseMvc();
+            app.UseWelcomePage();
         }
     }
 }

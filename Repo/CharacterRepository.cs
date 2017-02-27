@@ -42,7 +42,6 @@ namespace MyStarwarsApi.Repo{
         public void addCharacter(Character character)
         {
             character.id = Guid.NewGuid();
-            //_characters.Add(character);
             _dbContext.Characters.Add(character);
 
             _dbContext.SaveChanges();
@@ -53,9 +52,13 @@ namespace MyStarwarsApi.Repo{
             return _dbContext.Characters.FirstOrDefault(c => c.id == id);
         }
 
-        List<Character> ICharacterRepository.getCharacters()
+        public List<Character> getCharacters()
         {
             return _dbContext.Characters.ToList();
+        }
+
+        public List<Character> getCharactersByName(String name){
+            return _dbContext.Characters.Where(c => c.name.Contains(name)).ToList();
         }
     }
 }
