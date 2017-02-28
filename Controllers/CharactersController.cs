@@ -12,6 +12,8 @@ using MyStarwarsApi.Repo;
 
 namespace MyStarwarsApi.Controllers
 {
+    /// <summary>  </summary>
+    /// <remarks>  </remarks>
     [Route("api/[controller]")]
     public class CharactersController : Controller
     {
@@ -40,10 +42,10 @@ namespace MyStarwarsApi.Controllers
 
             List<Character> chars = _characterRepository.getCharacters();
 
-            if(headers.TryGetValue("name", out name))
+            if(headers.TryGetValue("containsName", out name))
                 chars = chars.Where(c => c.name.ToLower().Contains(name.ToString().ToLower())).ToList();
 
-            if(headers.TryGetValue("side", out side))
+            if(headers.TryGetValue("containsSide", out side))
                 chars = chars.Where(c => c.side.ToLower().Contains(side.ToString().ToLower())).ToList();
 
             if(headers.TryGetValue("skip", out skip)){

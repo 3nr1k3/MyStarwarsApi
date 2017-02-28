@@ -72,6 +72,7 @@ namespace MyStarwarsApi
             using (var context = app.ApplicationServices.GetRequiredService<SqliteDbContext>())
             {
                 context.Database.EnsureCreated();
+                CharacterRepository.FillCharacterRepository(context);
             }
 
             app.UseMvc();

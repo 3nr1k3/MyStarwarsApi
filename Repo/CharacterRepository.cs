@@ -12,7 +12,7 @@ namespace MyStarwarsApi.Repo{
         //private static List<Character> _characters = new List<Character>();
         private SqliteDbContext _dbContext;
 
-        public CharacterRepository(){
+        public static void FillCharacterRepository(SqliteDbContext context){
             Character DarthV = new Character.Builder()
                 .setId(Guid.NewGuid())
                 .setName("Darth Vader")
@@ -27,11 +27,11 @@ namespace MyStarwarsApi.Repo{
                 .addCharacterKilled(DarthV)
                 .build();
 
-            if(_dbContext.Characters.Count() <= 0 ){
-                _dbContext.Characters.Add(DarthV);
-                _dbContext.Characters.Add(ObiWan);
+            if(context.Characters.Count() <= 0 ){
+                context.Characters.Add(DarthV);
+                context.Characters.Add(ObiWan);
 
-                _dbContext.SaveChanges();
+                context.SaveChanges();
             }
         }
 
