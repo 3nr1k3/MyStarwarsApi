@@ -30,15 +30,20 @@ namespace MyStarwarsApi.Controllers
 
         // GET api/characters
         [HttpGet]
-        public IEnumerable<Character> Get()
-        {
+        [ProducesResponseType(typeof(IEnumerable<Character>), 200)]
+        public IEnumerable<Character> Get(
+            [FromHeader] String containsName,
+            [FromHeader] String containsSide,
+            [FromHeader] int skip,
+            [FromHeader] int take
+        ){
             var req = Request;
             var headers = req.Headers;
 
             StringValues    name,
                             side,
-                            take,
-                            skip;
+                            cuantity,
+                            offset;
 
             List<Character> chars = _characterRepository.getCharacters();
 
@@ -48,19 +53,19 @@ namespace MyStarwarsApi.Controllers
             if(headers.TryGetValue("containsSide", out side))
                 chars = chars.Where(c => c.side.ToLower().Contains(side.ToString().ToLower())).ToList();
 
-            if(headers.TryGetValue("skip", out skip)){
+            if(headers.TryGetValue("skip", out offset)){
                 int startIn;
-                if(Int32.TryParse(skip, out startIn))
+                if(Int32.TryParse(offset, out startIn))
                     chars = chars.Skip(startIn).ToList();
                 else
                     _logger.LogError($"Cannot cast (skip){skip} to integer.");
 
             }
 
-            if(headers.TryGetValue("take", out take)){
-                int offset;
-                if(Int32.TryParse(take, out offset))
-                    chars = chars.Take(offset).ToList();
+            if(headers.TryGetValue("take", out cuantity)){
+                int takeAux;
+                if(Int32.TryParse(cuantity, out takeAux))
+                    chars = chars.Take(takeAux).ToList();
                 else
                     _logger.LogError($"Cannot cast (take){take} to integer.");
             }else

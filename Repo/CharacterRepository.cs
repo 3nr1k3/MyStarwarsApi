@@ -54,6 +54,7 @@ namespace MyStarwarsApi.Repo{
 
         public List<Character> getCharacters()
         {
+            CharacterRepository.FillCharacterRepository(_dbContext);
             return _dbContext.Characters.ToList();
         }
 

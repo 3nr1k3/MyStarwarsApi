@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyStarwarsApi.Models;
+using MyStarwarsApi.Repo;
 
 namespace MyStarwarsApi.Context{
     public class SqliteDbContext : IdentityDbContext<ApplicationUser> {
@@ -21,6 +22,7 @@ namespace MyStarwarsApi.Context{
             if(!_databaseChecked){
                 _databaseChecked = true;
                 this.Database.EnsureCreated();
+                CharacterRepository.FillCharacterRepository(this);
             }
         }
     }

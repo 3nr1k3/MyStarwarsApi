@@ -6,3 +6,11 @@
 /home/ecardero/NetWorkspace/MyStarwarsApi/obj/Debug/netcoreapp1.0/MyStarwarsApi.AssemblyInfo.cs
 /home/ecardero/NetWorkspace/MyStarwarsApi/obj/Debug/netcoreapp1.0/MyStarwarsApi.dll
 /home/ecardero/NetWorkspace/MyStarwarsApi/obj/Debug/netcoreapp1.0/MyStarwarsApi.pdb
+F:\NetWorkspace\MyStarwarsApi\bin\Debug\netcoreapp1.0\MyStarwarsApi.deps.json
+F:\NetWorkspace\MyStarwarsApi\bin\Debug\netcoreapp1.0\MyStarwarsApi.runtimeconfig.json
+F:\NetWorkspace\MyStarwarsApi\bin\Debug\netcoreapp1.0\MyStarwarsApi.runtimeconfig.dev.json
+F:\NetWorkspace\MyStarwarsApi\bin\Debug\netcoreapp1.0\MyStarwarsApi.dll
+F:\NetWorkspace\MyStarwarsApi\bin\Debug\netcoreapp1.0\MyStarwarsApi.pdb
+F:\NetWorkspace\MyStarwarsApi\obj\Debug\netcoreapp1.0\MyStarwarsApi.AssemblyInfo.cs
+F:\NetWorkspace\MyStarwarsApi\obj\Debug\netcoreapp1.0\MyStarwarsApi.dll
+F:\NetWorkspace\MyStarwarsApi\obj\Debug\netcoreapp1.0\MyStarwarsApi.pdb

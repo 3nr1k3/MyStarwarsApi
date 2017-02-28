@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using MyStarwarsApi.Context;
 using MyStarwarsApi.Models;
 using MyStarwarsApi.Repo;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace MyStarwarsApi
 {
@@ -32,6 +33,31 @@ namespace MyStarwarsApi
         {
             // Add framework services.
             services.AddMvc();
+            services.AddMvcCore()
+                    .AddApiExplorer();
+
+            services.AddSwaggerGen(c => 
+            {
+                c.SwaggerDoc("v1", 
+                new Info 
+                { 
+                    Title = "Starwars Api - V1", 
+                    Version = "v1",
+                    Description = "",
+                    TermsOfService = "Only I can use it",
+                    Contact = new Contact
+                    {
+                        Name = "Enrique Cardero",
+                        Email = "enrique.cardero.ruiz@gmail.com"
+                    },
+                    License = new License
+                    {
+                        Name = "Will see..."
+                    }
+                });
+                //c.SingleApiVersion(new Info {Title = "My Api", Version = "v1"});
+            });
+
             services.AddEntityFrameworkSqlite()
                     .AddDbContext<SqliteDbContext>(options => 
             {
@@ -66,6 +92,20 @@ namespace MyStarwarsApi
             loggerFactory.AddDebug();
 
             app.UseDeveloperExceptionPage();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+
+                c.EnabledValidator();
+                c.BooleanValues(new object[] { 0, 1 });
+                c.DocExpansion("full");
+                c.InjectOnCompleteJavaScript("/swagger-ui/on-complete.js");
+                c.InjectOnFailureJavaScript("/swagger-ui/on-failure.js");
+                c.SupportedSubmitMethods(new[] { "get", "post", "put", "patch" });
+                c.ShowRequestHeaders();
+                c.ShowJsonEditor();
+            });
 
             app.UseOAuthValidation();
             app.UseOpenIddict();
