@@ -39,22 +39,19 @@ namespace MyStarwarsApi.Repo{
             _dbContext = context;
         }
 
-        public void addCharacter(Character character)
-        {
+        public void addCharacter(Character character){
             character.id = Guid.NewGuid();
             _dbContext.Characters.Add(character);
 
             _dbContext.SaveChanges();
         }
 
-        public Character getCharacter(Guid id)
-        {
+        public Character getCharacter(Guid id){
             return _dbContext.Characters.FirstOrDefault(c => c.id == id);
         }
 
         public List<Character> getCharacters()
         {
-            CharacterRepository.FillCharacterRepository(_dbContext);
             return _dbContext.Characters.ToList();
         }
 

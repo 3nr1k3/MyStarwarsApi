@@ -36,6 +36,15 @@
 ehthumbs.db
 Thumbs.db
 
+# Visual Studio files #
+#######################
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+
 # App specific #
 ################
 *.pdb
@@ -45,7 +54,10 @@ Thumbs.db
 project.assets.json
 *.runtimeconfig.dev.json
 *.deps.json
+*.db
 
-bin/
-obj/
-.vscode/
+bin/*
+obj/*
+Migrations/*_firstMigration.cs
+Migrations/*_firstMigration.Designer.cs
+Migrations/SqliteDbContextModelSnapshot.cs

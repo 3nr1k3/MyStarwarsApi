@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MyStarwarsApi.Context;
 using MyStarwarsApi.Models;
+using MyStarwarsApi.Models.ViewModel;
 using MyStarwarsApi.Repo;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -55,7 +57,6 @@ namespace MyStarwarsApi
                         Name = "Will see..."
                     }
                 });
-                //c.SingleApiVersion(new Info {Title = "My Api", Version = "v1"});
             });
 
             services.AddEntityFrameworkSqlite()
@@ -81,6 +82,8 @@ namespace MyStarwarsApi
                 
                 //For development only!
                 .DisableHttpsRequirement();
+
+            services.AddAutoMapper();
 
             services.AddScoped<ICharacterRepository, CharacterRepository>();
         }
@@ -117,6 +120,12 @@ namespace MyStarwarsApi
 
             app.UseMvc();
             app.UseWelcomePage();
+
+            Mapper.Initialize(c => {
+                c.CreateMap<Character,CharacterCreateViewModel>()
+                    .ReverseMap()
+                    .ForMember(m => m.charactersKilled, opt => opt.Ignore());
+            });
         }
     }
 }

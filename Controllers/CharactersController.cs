@@ -9,6 +9,8 @@ using Microsoft.Extensions.Primitives;
 
 using MyStarwarsApi.Models;
 using MyStarwarsApi.Repo;
+using MyStarwarsApi.Models.ViewModel;
+using AutoMapper;
 
 namespace MyStarwarsApi.Controllers
 {
@@ -30,6 +32,7 @@ namespace MyStarwarsApi.Controllers
 
         // GET api/characters
         [HttpGet]
+        [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<Character>), 200)]
         public IEnumerable<Character> Get(
             [FromHeader] String containsName,
@@ -77,6 +80,7 @@ namespace MyStarwarsApi.Controllers
 
         // GET api/characters/5
         [HttpGet("{id}")]
+        [Produces("application/json")]
         public Character Get(Guid id)
         {
             return _characterRepository.getCharacter(id);
@@ -84,18 +88,20 @@ namespace MyStarwarsApi.Controllers
 
         // POST api/characters
         [HttpPost]
-        public HttpResponseMessage Post([FromBody]Character newCharacter)
+        public HttpResponseMessage Post([FromBody]CharacterCreateViewModel newCharacter)
         {
             List<Character> charsKilled = new List<Character>();
+            Character characterToCreate = new Character();
 
             if(newCharacter.charactersKilled != null){
-                newCharacter.charactersKilled.ForEach(c => {
-                    charsKilled.Add(_characterRepository.getCharacter(c.id));
+                newCharacter.charactersKilled.ToList().ForEach(c => {
+                    charsKilled.Add(_characterRepository.getCharacter(c));
                 });
-                newCharacter.charactersKilled = charsKilled;
+                characterToCreate = Mapper.Map<Character>(newCharacter);
+                characterToCreate.charactersKilled = charsKilled;
             }
 
-            _characterRepository.addCharacter(newCharacter);
+            _characterRepository.addCharacter(characterToCreate);
             return new HttpResponseMessage(HttpStatusCode.Created);
         }
 

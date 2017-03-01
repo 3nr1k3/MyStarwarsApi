@@ -5,15 +5,14 @@ using System.ComponentModel.DataAnnotations;
 namespace MyStarwarsApi.Models{
     public class Character{
         [Key]
-        public Guid id{get;set;}
+        public Guid id{ get; set; }
         [Required]
-        public String name{get;set;}
-        public String side{get;set;}
-        public List<Character> charactersKilled{get;set;}
+        public String name{ get; set; }
+        public String side{ get; set; }
+        public List<Character> charactersKilled{ get; set; }
 
         public Character(){}
 
-#region Builder Pattern
         public class Builder{
             private Character _character;
 
@@ -57,6 +56,5 @@ namespace MyStarwarsApi.Models{
                 return _character;
             }
         }
-#endregion
     }
 }
