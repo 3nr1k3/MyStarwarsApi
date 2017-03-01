@@ -3,14 +3,15 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 
 using MyStarwarsApi.Models;
 using MyStarwarsApi.Repo;
 using MyStarwarsApi.Models.ViewModel;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace MyStarwarsApi.Controllers
 {
@@ -40,40 +41,23 @@ namespace MyStarwarsApi.Controllers
             [FromHeader] int skip,
             [FromHeader] int take
         ){
-            var req = Request;
-            var headers = req.Headers;
-
-            StringValues    name,
-                            side,
-                            cuantity,
-                            offset;
-
+            
             List<Character> chars = _characterRepository.getCharacters();
+            
+            _logger.LogInformation($"---------------------->> {HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress}");
+            
+            if(containsName != null)
+                chars = chars.Where(c => c.name.ToLower().Contains(containsName.ToLower())).ToList();
 
-            if(headers.TryGetValue("containsName", out name))
-                chars = chars.Where(c => c.name.ToLower().Contains(name.ToString().ToLower())).ToList();
+            if(containsSide != null)
+                chars = chars.Where(c => c.side.ToLower().Contains(containsSide.ToLower())).ToList();
 
-            if(headers.TryGetValue("containsSide", out side))
-                chars = chars.Where(c => c.side.ToLower().Contains(side.ToString().ToLower())).ToList();
+            chars = chars.Skip(skip).ToList();
 
-            if(headers.TryGetValue("skip", out offset)){
-                int startIn;
-                if(Int32.TryParse(offset, out startIn))
-                    chars = chars.Skip(startIn).ToList();
-                else
-                    _logger.LogError($"Cannot cast (skip){skip} to integer.");
-
-            }
-
-            if(headers.TryGetValue("take", out cuantity)){
-                int takeAux;
-                if(Int32.TryParse(cuantity, out takeAux))
-                    chars = chars.Take(takeAux).ToList();
-                else
-                    _logger.LogError($"Cannot cast (take){take} to integer.");
-            }else
+            if(take > 0)
+                chars = chars.Take(take).ToList();
+            else
                 chars = chars.Take(100).ToList();
-                
 
             return chars;
         }
