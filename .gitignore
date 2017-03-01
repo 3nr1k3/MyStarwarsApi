@@ -45,3 +45,7 @@ Thumbs.db
 project.assets.json
 *.runtimeconfig.dev.json
 *.deps.json
+
+bin/
+obj/
+.vscode/
