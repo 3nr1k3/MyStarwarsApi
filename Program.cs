@@ -17,7 +17,9 @@ namespace MyStarwarsApi
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .ConfigureLogging(options => {
-                    options.AddConsole();
+                    options.AddConsole(
+                        LogLevel.None
+                    );
                     options.AddDebug();
                 })
                 .UseConfiguration(configuration)

@@ -77,13 +77,16 @@ namespace MyStarwarsApi.Controllers
             List<Character> charsKilled = new List<Character>();
             Character characterToCreate = new Character();
 
+            
+
             if(newCharacter.charactersKilled != null){
                 newCharacter.charactersKilled.ToList().ForEach(c => {
                     charsKilled.Add(_characterRepository.getCharacter(c));
                 });
-                characterToCreate = Mapper.Map<Character>(newCharacter);
-                characterToCreate.charactersKilled = charsKilled;
             }
+
+            characterToCreate = Mapper.Map<CharacterCreateViewModel, Character>(newCharacter);
+            characterToCreate.charactersKilled = charsKilled;
 
             _characterRepository.addCharacter(characterToCreate);
             return new HttpResponseMessage(HttpStatusCode.Created);

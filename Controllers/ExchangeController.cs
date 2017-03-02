@@ -5,13 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace MyStarwarsApi.Controllers{
     [Route("api/[controller]")]
     public class ExchangeController : Controller{
-
-        [HttpGet]
-        public String Get()
-        {
-            return "Hello World";
-        }
-
         [HttpGet("{coin}/{cuantity}")]
         public String Get(String coin, float cuantity)
         {
