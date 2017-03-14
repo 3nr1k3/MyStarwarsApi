@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyStarwarsApi.Models{
     public class Character{
@@ -10,9 +11,14 @@ namespace MyStarwarsApi.Models{
         public String name{ get; set; }
         public String side{ get; set; }
         public List<Character> charactersKilled{ get; set; }
-
+        
+        public Guid avatarId{get;set;}
+        
+        [NotMappedAttribute]
+        public Image avatar{ get;set; }
+        public List<Image> Images{get;set;}
+        
         public Character(){}
-
         public class Builder{
             private Character _character;
 
@@ -49,6 +55,12 @@ namespace MyStarwarsApi.Models{
                     _character.charactersKilled = new List<Character>();
                     
                 _character.charactersKilled.Add(character);
+                return this;
+            }
+
+            public Builder setAvatar(Guid id)
+            {
+                _character.avatarId = id;
                 return this;
             }
 

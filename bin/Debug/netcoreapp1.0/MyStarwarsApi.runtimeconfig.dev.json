@@ -1,7 +1,7 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\enriq\\.nuget\\packages"
+      "/home/ecardero/.nuget/packages"
     ]
   }
 }

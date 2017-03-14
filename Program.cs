@@ -18,7 +18,7 @@ namespace MyStarwarsApi
                 .UseKestrel()
                 .ConfigureLogging(options => {
                     options.AddConsole(
-                        LogLevel.None
+                        LogLevel.Trace
                     );
                     options.AddDebug();
                 })

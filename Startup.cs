@@ -12,6 +12,7 @@ using MyStarwarsApi.Context;
 using MyStarwarsApi.Models;
 using MyStarwarsApi.Models.ViewModel;
 using MyStarwarsApi.Repo;
+using MyStarwarsApi.Repo.Interfaces;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace MyStarwarsApi
@@ -31,7 +32,9 @@ namespace MyStarwarsApi
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(
+            IServiceCollection services
+            )
         {
             // Add framework services.
             services.AddMvc();
@@ -86,19 +89,35 @@ namespace MyStarwarsApi
             services.AddAutoMapper();
 
             services.AddScoped<ICharacterRepository, CharacterRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
+
+            services.AddSingleton<IWebHostBuilder, WebHostBuilder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(
+            IApplicationBuilder app, 
+            IHostingEnvironment env, 
+            ILoggerFactory loggerFactory
+            )
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             app.UseDeveloperExceptionPage();
 
+            app.UseStaticFiles();
+
+            /*app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), @"app/wwwroot")),
+                    RequestPath = new PathString("/app/wwwroot")
+            });*/
+
             app.UseSwagger();
             app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My Starwars Api");
 
                 c.EnabledValidator();
                 c.BooleanValues(new object[] { 0, 1 });
@@ -112,11 +131,11 @@ namespace MyStarwarsApi
 
             app.UseOAuthValidation();
             app.UseOpenIddict();
-            using (var context = app.ApplicationServices.GetRequiredService<SqliteDbContext>())
+            /*using (var context = app.ApplicationServices.GetRequiredService<SqliteDbContext>())
             {
                 context.Database.EnsureCreated();
                 CharacterRepository.FillCharacterRepository(context);
-            }
+            }*/
 
             app.UseMvc();
             app.UseWelcomePage();
@@ -124,6 +143,7 @@ namespace MyStarwarsApi
             Mapper.Initialize(c => {
                 c.CreateMap<Character,CharacterCreateViewModel>()
                     .ReverseMap()
+                    .ForMember(m => m.avatar, opt => opt.Ignore())
                     .ForMember(m => m.charactersKilled, opt => opt.Ignore());
             });
         }

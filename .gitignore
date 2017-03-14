@@ -61,3 +61,5 @@ obj/*
 Migrations/*_firstMigration.cs
 Migrations/*_firstMigration.Designer.cs
 Migrations/SqliteDbContextModelSnapshot.cs
+obj/project.assets.json
+obj/MyStarwarsApi.csproj.nuget.g.props
