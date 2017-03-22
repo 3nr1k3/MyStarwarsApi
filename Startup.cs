@@ -92,6 +92,8 @@ namespace MyStarwarsApi
             services.AddScoped<IImageRepository, ImageRepository>();
 
             services.AddSingleton<IWebHostBuilder, WebHostBuilder>();
+
+            services.AddSingleton<IConfiguration>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -107,13 +109,6 @@ namespace MyStarwarsApi
             app.UseDeveloperExceptionPage();
 
             app.UseStaticFiles();
-
-            /*app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), @"app/wwwroot")),
-                    RequestPath = new PathString("/app/wwwroot")
-            });*/
 
             app.UseSwagger();
             app.UseSwaggerUI(c => {
@@ -131,11 +126,6 @@ namespace MyStarwarsApi
 
             app.UseOAuthValidation();
             app.UseOpenIddict();
-            /*using (var context = app.ApplicationServices.GetRequiredService<SqliteDbContext>())
-            {
-                context.Database.EnsureCreated();
-                CharacterRepository.FillCharacterRepository(context);
-            }*/
 
             app.UseMvc();
             app.UseWelcomePage();

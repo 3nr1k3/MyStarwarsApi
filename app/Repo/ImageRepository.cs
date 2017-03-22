@@ -29,19 +29,11 @@ namespace MyStarwarsApi.Repo
 
         public Image getAvatar(Guid id)
         {
-            Image img = _dbContext.Images.FirstOrDefault(i => i.id == id); 
-            
-            if (img != null)
-                _logger.LogInformation(img.url);
-            else
-                _logger.LogError("¡¡¡¡¡¡¡¡¡¡¡¡IMG IS NULL!!!!!!!!!!!");
-
-            return img;
+            return _dbContext.Images.FirstOrDefault(i => i.id == id); 
         }
 
         public List<Image> getImagesByParent(Guid id)
         {
-            
             throw new NotImplementedException();
         }
     }

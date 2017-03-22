@@ -2,16 +2,17 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 
 using MyStarwarsApi.Helpers;
 using MyStarwarsApi.Repo.Interfaces;
+using Newtonsoft.Json;
 
 namespace MyStarwarsApi.Models
 {
+    
+
     public enum image_type
     {
         Default = 0,
@@ -22,9 +23,12 @@ namespace MyStarwarsApi.Models
 
     public class Image
     {
+        [JsonIgnore]
         [Key]
         public Guid id {get;set;}
+        [JsonIgnore]
         public String format {get;set;}
+        [JsonIgnore]
         public image_type imageType{get;set;}
         public String url{get;set;}
 
@@ -34,12 +38,15 @@ namespace MyStarwarsApi.Models
         public Image(IImageRepository repository)
         {
             Guid newId;
+            Image avatar;
             var count = 0;
+
             do
             {
                 newId = Guid.NewGuid();
+                avatar = repository.getAvatar(newId);
                 count++;
-            }while(repository.getAvatar(newId) != null || count < 3);
+            }while( avatar != null && count < 3);
 
             this.id = newId;
         }
@@ -50,6 +57,11 @@ namespace MyStarwarsApi.Models
                 return $"./images/{Enum.GetName(typeof(image_type), imageType)}/{id}.{format.ToString()}";
                 else
                 return $"./images/{id}.{format.ToString()}";
+        }
+
+        public String imageServerPath(String webRootPath)
+        {
+            return $"{webRootPath}/images/{Enum.GetName(typeof(image_type), imageType)}/{id.ToString().Substring(0,8)}.{format}";
         }
 
         public class Builder
@@ -73,18 +85,15 @@ namespace MyStarwarsApi.Models
                 return this;
             }
 
-            public Builder fromBitmap(Bitmap avatarBitmap, IHostingEnvironment env)
+            public async Task<Builder> fromBitmapAsync(Bitmap avatarBitmap, IHostingEnvironment env)
             {
-                Console.WriteLine("*************************************************************");
-                Console.WriteLine(Directory.Exists($"{env.WebRootPath}"));
-                Console.WriteLine($"{env.WebRootPath}/images/{Enum.GetName(typeof(image_type), _image.imageType)}/{_image.id.ToString().Substring(0,10)}");
-                Console.WriteLine(ImageHelper.getImageFormatFromString(_image.format));
-                Console.WriteLine("*************************************************************");
+                String ip = await NetworkHelper.getIpAddress();
 
-                _image.url = $"http://172.20.17.7:5000/images/{Enum.GetName(typeof(image_type), _image.imageType)}/{_image.id.ToString().Substring(0,10)}.{_image.format}";
+                //_image.url = $"http://{ip}:5000/images/{Enum.GetName(typeof(image_type), _image.imageType)}/{_image.id.ToString().Substring(0, 8)}.{_image.format}";
+                _image.url = $"http://172.20.17.7:5000/images/{Enum.GetName(typeof(image_type), _image.imageType)}/{_image.id.ToString().Substring(0, 8)}.{_image.format}";
 
                 avatarBitmap.Save(
-                    $"{env.WebRootPath}/images/{Enum.GetName(typeof(image_type), _image.imageType)}/{_image.id.ToString().Substring(0,10)}.{_image.format}",
+                    $"{env.WebRootPath}/images/{Enum.GetName(typeof(image_type), _image.imageType)}/{_image.id.ToString().Substring(0, 8)}.{_image.format}",
                     ImageHelper.getImageFormatFromString(_image.format)
                 );
                 return this;

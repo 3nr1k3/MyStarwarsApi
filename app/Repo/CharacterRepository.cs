@@ -25,9 +25,13 @@ namespace MyStarwarsApi.Repo{
         }
 
         public Character getCharacter(Guid id){
-            return _dbContext.Characters
+            Character character = _dbContext.Characters
                 .Include(c => c.charactersKilled)
                 .FirstOrDefault(c => c.id == id);
+            
+            character.avatar = _dbContext.Images.FirstOrDefault(i => i.id == character.avatarId);
+
+            return character;
         }
 
         public List<Character> getCharacters()
@@ -37,6 +41,13 @@ namespace MyStarwarsApi.Repo{
 
         public List<Character> getCharactersByName(String name){
             return _dbContext.Characters.Where(c => c.name.Contains(name)).ToList();
+        }
+
+        public int removeCharacter(Character character)
+        {
+            _dbContext.Characters.Remove(character);
+            _dbContext.Images.Remove(_dbContext.Images.FirstOrDefault(i => i.id == character.avatarId));
+            return _dbContext.SaveChanges();
         }
     }
 }

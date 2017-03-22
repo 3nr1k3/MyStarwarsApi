@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace MyStarwarsApi.Models{
     public class Character{
@@ -12,11 +13,17 @@ namespace MyStarwarsApi.Models{
         public String side{ get; set; }
         public List<Character> charactersKilled{ get; set; }
         
+        [JsonIgnore]
         public Guid avatarId{get;set;}
         
         [NotMappedAttribute]
         public Image avatar{ get;set; }
         public List<Image> Images{get;set;}
+
+        public String Dump()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
         
         public Character(){}
         public class Builder{

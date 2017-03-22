@@ -10,5 +10,6 @@ namespace MyStarwarsApi.Repo.Interfaces
         Character getCharacter(Guid id);
         List<Character> getCharactersByName(String name);
         void addCharacter(Character character);
+        int removeCharacter(Character character);
     }
 }
